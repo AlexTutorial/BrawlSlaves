@@ -1,5 +1,5 @@
-isFirstBoot = False 
-name = 'red-krok'
+isFirstBoot = True 
+name = ''
 cups=0
-gems=99565
-brawlers=['Van_Darkholm', 'Artem']
+gems=
+brawlers=['Van_Darkholm']
