@@ -4,11 +4,12 @@ try:
     import level
     from splashes import splashes
     from pygame.locals import *
-    from brawlers import all_brawlers, all_brawlers_list
+    from brawlers import all_brawlers, all_brawlers_list, brawlers_data
     from pygame_widgets.progressbar import ProgressBar
     import pygame_textinput
     import pygame_widgets
     from pygame_widgets.button import Button
+    from pygame_widgets.dropdown import Dropdown
 except:
     import os
     os.system("pip install pygame pygame_textinput pygame_widgets")
@@ -17,11 +18,12 @@ except:
     import level
     from splashes import splashes
     from pygame.locals import *
-    from brawlers import all_brawlers, all_brawlers_list
+    from brawlers import all_brawlers, all_brawlers_list, brawlers_data
     from pygame_widgets.progressbar import ProgressBar
     import pygame_textinput
     import pygame_widgets
     from pygame_widgets.button import Button
+    from pygame_widgets.dropdown import Dropdown
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -37,6 +39,7 @@ data = "Data/level.py"
 clock = pygame.time.Clock()
 
 font = pygame.font.SysFont('arial', 36)
+font16 = pygame.font.SysFont('arial', 16)
 pygame.display.set_mode((600, 400))
 pygame.display.update()
 screen = pygame.display.set_mode((600, 400))
@@ -86,8 +89,13 @@ def policy():
         pygame.display.update()
 
 
-def load_game(game_type):
+def run_fight():
     pass
+
+
+def load_game(game_type):
+    if game_type == "fight":
+        run_fight()
 
 
 def fist_boot():
@@ -148,6 +156,12 @@ def show_brawlers(play, brawl, way, shop_btt):
         screen.blit(text2, (200, 50))
         text2 = font.render(f'{all_brawlers[all_brawlers_list[i]].replace("_", " ")}', True, (250, 250, 250))
         screen.blit(text2, (200, 300))
+        text2 = font16.render(f'Здоровье: {brawlers_data[all_brawlers_list[i]]["hp"]}', True, (250, 250, 250))
+        screen.blit(text2, (10, 100))
+        text2 = font16.render(f'Урон: {brawlers_data[all_brawlers_list[i]]["dmg"]}', True, (250, 250, 250))
+        screen.blit(text2, (10, 120))
+        text2 = font16.render(f'С супером: {brawlers_data[all_brawlers_list[i]]["Sdmg"]}', True, (250, 250, 250))
+        screen.blit(text2, (10, 140))
         if all_brawlers_list[i] not in level.brawlers:
             screen.blit(not_available, (50, 300))
         screen.blit(bws_imgs[all_brawlers_list[i]], (200, 100))
@@ -157,7 +171,7 @@ def show_brawlers(play, brawl, way, shop_btt):
         pygame.display.update()
 
 
-def open_case(btt):
+def open_case(btt):   # sourcery no-metrics skip: merge-duplicate-blocks
     btt.hide()
     btt.disable()
     if level.gems < 10:
@@ -260,9 +274,17 @@ def show_menu(submit=None):
     if submit is not None:
         submit.disable()
         submit.hide()
-    game_type = "fight"
+    gt_dpd = Dropdown(
+        screen, 475, 275, 100, 50, name='Режим игры',
+        choices=[
+            'Бой 1 на 1',
+            'Бой 3 на 3',
+            'Тренировка',
+        ],
+        borderRadius=3, colour=pygame.Color('orange'), values=["fight", "fight3x3", 'tren'], direction='up', textHAlign='left'
+    )
     way = ProgressBar(screen, 50, 345, 200, 40, lambda: cups/scal, curved=True)
-    play_btt = Button(screen, 500, 350, 80, 30, hoverColour=(255, 55, 100), colour=(255, 5, 55), radius=5, text='Играть!', onClick=lambda: load_game(game_type))
+    play_btt = Button(screen, 475, 350, 100, 50, hoverColour=(255, 55, 100), colour=(255, 5, 55), radius=5, text='Играть!', onClick=lambda: load_game(gt_dpd.getSelected()))
     brawlers_btt = Button(screen, 50, 150, 80, 30, hoverColour=(255, 55, 100), colour=(255, 5, 55), radius=5,
                       text='Бойцы', onClick=lambda: show_brawlers(play_btt, brawlers_btt, way, shop_btt))
     shop_btt = Button(screen, 50, 110, 80, 30, hoverColour=(55, 255, 100), colour=(5, 255, 55), radius=5,
