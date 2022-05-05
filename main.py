@@ -175,6 +175,8 @@ def open_case(btt):
             while True:
                 if new_bw in level.brawlers:
                     new_bw = random.choice(all_brawlers_list)
+                elif level.brawlers == all_brawlers_list:
+                    break
                 else:
                     break
             level.brawlers.append(new_bw)
