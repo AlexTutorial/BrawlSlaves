@@ -129,7 +129,8 @@ def fist_boot():
         pygame.display.update()
 
 
-def show_brawlers(play, brawl, way, shop_btt):
+def show_brawlers(play, brawl, way, shop_btt,gt_dpd):
+    gt_dpd.hide()
     play.hide()
     brawl.hide()
     way.hide()
@@ -232,7 +233,8 @@ def open_case(btt):   # sourcery no-metrics skip: merge-duplicate-blocks
         pygame.display.update()
 
 
-def show_shop(play_btt, brawlers_btt, way, shop_btt):
+def show_shop(play_btt, brawlers_btt, way, shop_btt,gt_dpd):
+    gt_dpd.hide()
     play_btt.hide()
     brawlers_btt.hide()
     way.hide()
@@ -287,9 +289,9 @@ def show_menu(submit=None):
     way = ProgressBar(screen, 50, 345, 200, 40, lambda: cups/scal, curved=True)
     play_btt = Button(screen, 475, 350, 100, 50, hoverColour=(255, 55, 100), colour=(255, 5, 55), radius=5, text='Играть!', onClick=lambda: load_game(gt_dpd.getSelected()))
     brawlers_btt = Button(screen, 50, 150, 80, 30, hoverColour=(255, 55, 100), colour=(255, 5, 55), radius=5,
-                      text='Бойцы', onClick=lambda: show_brawlers(play_btt, brawlers_btt, way, shop_btt))
+                      text='Бойцы', onClick=lambda: show_brawlers(play_btt, brawlers_btt, way, shop_btt, gt_dpd))
     shop_btt = Button(screen, 50, 110, 80, 30, hoverColour=(55, 255, 100), colour=(5, 255, 55), radius=5,
-                          text='Магаз', onClick=lambda: show_shop(play_btt, brawlers_btt, way, shop_btt))
+                          text='Магаз', onClick=lambda: show_shop(play_btt, brawlers_btt, way, shop_btt, gt_dpd))
     while True:
         events = pygame.event.get()
         for event in events:
