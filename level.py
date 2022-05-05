@@ -1,5 +1,5 @@
 isFirstBoot = True 
 name = ''
 cups=0
-gems=
+gems=10
 brawlers=['Van_Darkholm']
