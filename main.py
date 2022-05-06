@@ -153,8 +153,7 @@ def run_fight():
                 img = pygame.transform.scale(img, (50, 50))
                 screen.blit(img, (my_y, my_x))
                 filled_range = gen_world()
-                 if list(set(my_x_range) & set(filled_range[1])) and
-                    print(list(set(my_y_range) & set(filled_range[0]))[0])
+                if list(set(my_x_range) & set(filled_range[1])) and list(set(my_y_range) & set(filled_range[0])):
                     print("collision")
 
                 # for x in my_x_range:
