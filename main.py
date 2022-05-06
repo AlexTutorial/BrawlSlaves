@@ -37,7 +37,7 @@ PINK = (230, 50, 230)
 pygame.init()
 data = "Data/level.py"
 clock = pygame.time.Clock()
-
+selected_bw = "Van_Darkholm"
 font = pygame.font.SysFont('arial', 36)
 font16 = pygame.font.SysFont('arial', 16)
 pygame.display.set_mode((600, 400))
@@ -92,24 +92,36 @@ def policy():
 
 
 def gen_world():
+    filled_x_range = []
+    filled_y_range = []
     for i in range(8):
         if i in [3, 4]:
             continue
         screen.blit(box, (115, i*50))
-
+        filled_y_range.extend(iter(range(i, i + 50)))
+        filled_x_range.extend(iter(range(115, 115 + 50)))
     for i in range(8):
         if i in [3, 4]:
             continue
         screen.blit(box, (445, i*50))
+        filled_y_range.extend(iter(range(i, i + 50)))
+        filled_x_range.extend(iter(range(445, 445 + 50)))
 
     for i in range(8):
         if i in [0, 1, 3, 4, 6, 7, 8]:
             continue
         screen.blit(box, (275, i*50))
+        filled_y_range.extend(iter(range(i, i + 50)))
+        filled_x_range.extend(iter(range(275, 275 + 50)))
+    return [filled_x_range, filled_y_range]
 
 
 def run_fight():
     counter = 0
+    my_x = 10
+    my_y = 50
+    opp_x = 10
+    opp_y = 450
     sp = random.choice(splashes)
     load = ProgressBar(screen, 150, 345, 200, 40, lambda: counter / 100, curved=True, completedColour=(255, 220, 0))
     while True:
@@ -124,7 +136,11 @@ def run_fight():
         text1 = font16.render(f'{sp}', True, (255, 255, 255))
         screen.blit(text1, (130, 300))
         if counter > 100:
+            flag = False
+            pressed_key = ""
             while True:
+                my_x_range = [i for i in range(my_x, my_x+50)]
+                my_y_range = [i for i in range(my_y, my_y + 50)]
                 screen.fill((176, 191, 26))
                 events = pygame.event.get()
                 clock.tick(120)
@@ -133,10 +149,47 @@ def run_fight():
                 screen.blit(text1, (20, 10))
                 text1 = font16.render('Противники', True, (255, 255, 255))
                 screen.blit(text1, (505, 10))
-                gen_world()
+                img = bws_imgs[selected_bw]
+                img = pygame.transform.scale(img, (50, 50))
+                screen.blit(img, (my_y, my_x))
+                filled_range = gen_world()
+                 if list(set(my_x_range) & set(filled_range[1])) and
+                    print(list(set(my_y_range) & set(filled_range[0]))[0])
+                    print("collision")
+
+                # for x in my_x_range:
+                #     for y in my_y_range:
+                #         if x in filled_range[1] and y in filled_range[0]:
+                #             print("collision!")
                 for event in events:
                     if event.type == pygame.QUIT:
                         exit()
+                    elif event.type == pygame.KEYDOWN:
+                        flag = True
+                        if event.key == pygame.K_LEFT:
+                            pressed_key = "L"
+                            my_y -= 1
+                        if event.key == pygame.K_RIGHT:
+                            pressed_key = "R"
+                            my_y += 1
+                        if event.key == pygame.K_UP:
+                            pressed_key = "U"
+                            my_x -= 1
+                        if event.key == pygame.K_DOWN:
+                            pressed_key = "D"
+                            my_x += 1
+                    elif event.type == pygame.KEYUP:
+                        pressed_key = ""
+                        flag = False
+                if flag:
+                    if pressed_key == "L":
+                        my_y -= 10
+                    elif pressed_key == "R":
+                        my_y += 10
+                    elif pressed_key == "U":
+                        my_x -= 10
+                    elif pressed_key == "D":
+                        my_x += 10
 
                 pygame_widgets.update(events)
                 pygame.display.update()
@@ -332,6 +385,7 @@ def show_menu(submit=None):
     nick = level.name
     cups = level.cups
     selected_brawler = random.choice(level.brawlers)
+    selected_bw = selected_brawler
     scal = 10
     while scal < cups:
         scal *= 10
