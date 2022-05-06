@@ -98,20 +98,20 @@ def gen_world():
         if i in [3, 4]:
             continue
         screen.blit(box, (115, i*50))
-        filled_y_range.extend(iter(range(i, i + 50)))
+        filled_y_range.extend(iter(range(i*50, i*50 + 50)))
         filled_x_range.extend(iter(range(115, 115 + 50)))
     for i in range(8):
         if i in [3, 4]:
             continue
         screen.blit(box, (445, i*50))
-        filled_y_range.extend(iter(range(i, i + 50)))
+        filled_y_range.extend(iter(range(i*50, i*50 + 50)))
         filled_x_range.extend(iter(range(445, 445 + 50)))
 
     for i in range(8):
         if i in [0, 1, 3, 4, 6, 7, 8]:
             continue
         screen.blit(box, (275, i*50))
-        filled_y_range.extend(iter(range(i, i + 50)))
+        filled_y_range.extend(iter(range(i*50, i*50 + 50)))
         filled_x_range.extend(iter(range(275, 275 + 50)))
     return [filled_x_range, filled_y_range]
 
@@ -182,13 +182,13 @@ def run_fight():
                         flag = False
                 if flag:
                     if pressed_key == "L":
-                        my_y -= 10
+                        my_y -= 1
                     elif pressed_key == "R":
-                        my_y += 10
+                        my_y += 1
                     elif pressed_key == "U":
-                        my_x -= 10
+                        my_x -= 1
                     elif pressed_key == "D":
-                        my_x += 10
+                        my_x += 1
 
                 pygame_widgets.update(events)
                 pygame.display.update()
