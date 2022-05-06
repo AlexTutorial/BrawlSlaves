@@ -24,6 +24,6 @@ brawlers_data = {
     "###hub.com": {
         "hp": 2000,
         "dmg": 600,
-        "Sdmg": 1050
+        "Sdmg": 1000
     }
 }
