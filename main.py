@@ -45,6 +45,7 @@ pygame.display.update()
 pygame.display.set_caption("BrawlSlaves")
 screen = pygame.display.set_mode((600, 400))
 not_available = pygame.image.load("Sprites/not_available.jpg")
+box = pygame.image.load("Sprites/box.jpg")
 gem = pygame.image.load("Sprites/gem.jpg")
 case = pygame.image.load("Sprites/case.jpg")
 bws_imgs = {bw: pygame.image.load(f"Sprites/{bw}.jpg") for bw in all_brawlers_list}
@@ -90,6 +91,23 @@ def policy():
         pygame.display.update()
 
 
+def gen_world():
+    for i in range(8):
+        if i in [3, 4]:
+            continue
+        screen.blit(box, (115, i*50))
+
+    for i in range(8):
+        if i in [3, 4]:
+            continue
+        screen.blit(box, (445, i*50))
+
+    for i in range(8):
+        if i in [0, 1, 3, 4, 6, 7, 8]:
+            continue
+        screen.blit(box, (275, i*50))
+
+
 def run_fight():
     counter = 0
     sp = random.choice(splashes)
@@ -105,7 +123,23 @@ def run_fight():
         screen.blit(text1, (225, 50))
         text1 = font16.render(f'{sp}', True, (255, 255, 255))
         screen.blit(text1, (130, 300))
+        if counter > 100:
+            while True:
+                screen.fill((176, 191, 26))
+                events = pygame.event.get()
+                clock.tick(120)
+                load.hide()
+                text1 = font16.render('Моя команда', True, (255, 255, 255))
+                screen.blit(text1, (20, 10))
+                text1 = font16.render('Противники', True, (255, 255, 255))
+                screen.blit(text1, (505, 10))
+                gen_world()
+                for event in events:
+                    if event.type == pygame.QUIT:
+                        exit()
 
+                pygame_widgets.update(events)
+                pygame.display.update()
 
         # ___________________________________________#
         for event in events:
