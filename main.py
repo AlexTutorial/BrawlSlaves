@@ -37,7 +37,6 @@ PINK = (230, 50, 230)
 pygame.init()
 data = "Data/level.py"
 clock = pygame.time.Clock()
-selected_bw = "Van_Darkholm"
 font = pygame.font.SysFont('arial', 36)
 font16 = pygame.font.SysFont('arial', 16)
 pygame.display.set_mode((600, 400))
@@ -116,7 +115,7 @@ def gen_world():
     return [filled_x_range, filled_y_range]
 
 
-def run_fight():
+def run_fight(selected_bw): # sourcery no-metrics skip: low-code-quality
     counter = 0
     my_x = 10
     my_y = 50
@@ -153,13 +152,6 @@ def run_fight():
                 img = pygame.transform.scale(img, (50, 50))
                 screen.blit(img, (my_y, my_x))
                 filled_range = gen_world()
-                if list(set(my_x_range) & set(filled_range[1])) and list(set(my_y_range) & set(filled_range[0])):
-                    print("collision")
-
-                # for x in my_x_range:
-                #     for y in my_y_range:
-                #         if x in filled_range[1] and y in filled_range[0]:
-                #             print("collision!")
                 for event in events:
                     if event.type == pygame.QUIT:
                         exit()
@@ -168,27 +160,51 @@ def run_fight():
                         if event.key == pygame.K_LEFT:
                             pressed_key = "L"
                             my_y -= 1
+                            if list(set(my_x_range) & set(filled_range[1])) and list(set(my_y_range) & set(filled_range[0])):
+                                my_y += 10
                         if event.key == pygame.K_RIGHT:
                             pressed_key = "R"
                             my_y += 1
+                            if list(set(my_x_range) & set(filled_range[1])) and list(set(my_y_range) & set(filled_range[0])):
+                                my_y -= 10
                         if event.key == pygame.K_UP:
                             pressed_key = "U"
                             my_x -= 1
+                            if list(set(my_x_range) & set(filled_range[1])) and list(set(my_y_range) & set(filled_range[0])):
+                                my_x += 10
                         if event.key == pygame.K_DOWN:
                             pressed_key = "D"
                             my_x += 1
+                            if list(set(my_x_range) & set(filled_range[1])) and list(set(my_y_range) & set(filled_range[0])):
+                                my_x -= 10
                     elif event.type == pygame.KEYUP:
                         pressed_key = ""
                         flag = False
                 if flag:
                     if pressed_key == "L":
                         my_y -= 1
+                        if list(set(my_x_range) & set(filled_range[1])) and list(set(my_y_range) & set(filled_range[0])):
+                            my_y += 10
                     elif pressed_key == "R":
                         my_y += 1
+                        if list(set(my_x_range) & set(filled_range[1])) and list(set(my_y_range) & set(filled_range[0])):
+                            my_y -= 10
                     elif pressed_key == "U":
                         my_x -= 1
+                        if list(set(my_x_range) & set(filled_range[1])) and list(set(my_y_range) & set(filled_range[0])):
+                            my_x += 10
                     elif pressed_key == "D":
                         my_x += 1
+                        if list(set(my_x_range) & set(filled_range[1])) and list(set(my_y_range) & set(filled_range[0])):
+                            my_x -= 10
+                if my_x <= 0:
+                    my_x += 5
+                elif my_x >= 350:
+                    my_x -= 5
+                elif my_y <= 0:
+                    my_y += 5
+                elif my_y >= 550:
+                    my_y -= 5
 
                 pygame_widgets.update(events)
                 pygame.display.update()
@@ -202,14 +218,14 @@ def run_fight():
         pygame.display.update()
 
 
-def load_game(game_type, play, brawl, way, shop_btt, gt_dpd):
+def load_game(game_type, play, brawl, way, shop_btt, gt_dpd, sbw):
     gt_dpd.hide()
     play.hide()
     brawl.hide()
     way.hide()
     shop_btt.hide()
     if game_type == "fight":
-        run_fight()
+        run_fight(sbw)
 
 
 def fist_boot():
@@ -384,7 +400,6 @@ def show_menu(submit=None):
     nick = level.name
     cups = level.cups
     selected_brawler = random.choice(level.brawlers)
-    selected_bw = selected_brawler
     scal = 10
     while scal < cups:
         scal *= 10
@@ -401,7 +416,7 @@ def show_menu(submit=None):
         borderRadius=3, colour=pygame.Color('orange'), values=["fight", "fight3x3", 'tren'], direction='up', textHAlign='left'
     )
     way = ProgressBar(screen, 50, 345, 200, 40, lambda: cups/scal, curved=True)
-    play_btt = Button(screen, 475, 350, 100, 50, hoverColour=(255, 55, 100), colour=(255, 5, 55), radius=5, text='Играть!', onClick=lambda: load_game(gt_dpd.getSelected(), play_btt, brawlers_btt, way, shop_btt, gt_dpd))
+    play_btt = Button(screen, 475, 350, 100, 50, hoverColour=(255, 55, 100), colour=(255, 5, 55), radius=5, text='Играть!', onClick=lambda: load_game(gt_dpd.getSelected(), play_btt, brawlers_btt, way, shop_btt, gt_dpd, selected_brawler))
     brawlers_btt = Button(screen, 50, 150, 80, 30, hoverColour=(255, 55, 100), colour=(255, 5, 55), radius=5,
                       text='Бойцы', onClick=lambda: show_brawlers(play_btt, brawlers_btt, way, shop_btt, gt_dpd))
     shop_btt = Button(screen, 50, 110, 80, 30, hoverColour=(55, 255, 100), colour=(5, 255, 55), radius=5,
