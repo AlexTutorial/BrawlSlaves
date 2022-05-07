@@ -107,7 +107,7 @@ def gen_world():
         filled_x_range.extend(iter(range(445, 445 + 50)))
 
     for i in range(8):
-        if i in [0, 1, 3, 4, 6, 7, 8]:
+        if i in [3, 4]:
             continue
         screen.blit(box, (275, i*50))
         filled_y_range.extend(iter(range(i*50, i*50 + 50)))
@@ -258,13 +258,15 @@ def fist_boot():
         pygame.display.update()
 
 
-def show_brawlers(play, brawl, way, shop_btt,gt_dpd):
+def show_brawlers(play, brawl, way, shop_btt, gt_dpd):
     gt_dpd.hide()
     play.hide()
     brawl.hide()
     way.hide()
     shop_btt.hide()
     i = 0
+    select_btt = Button(screen, 5, 355, 80, 30, hoverColour=(55, 255, 100), colour=(5, 255, 55), radius=5,
+                     text='Выбрать', onClick=lambda: show_menu(sel_b=all_brawlers_list[i], sel_btt=select_btt))
     while True:
         events = pygame.event.get()
         for event in events:
@@ -283,7 +285,7 @@ def show_brawlers(play, brawl, way, shop_btt,gt_dpd):
         screen.fill(GREEN)
         text1 = font.render('Все бойцы', True, (250, 250, 250))
         screen.blit(text1, (220, 10))
-        text2 = font.render(f'{all_brawlers_list[i].replace("_", " ")}', True, (250, 50, 50))
+        text2 = font.render(f'{brawlers_data[all_brawlers_list[i]]["name"]}', True, (250, 50, 50))
         screen.blit(text2, (200, 50))
         text2 = font.render(f'{all_brawlers[all_brawlers_list[i]].replace("_", " ")}', True, (250, 250, 250))
         screen.blit(text2, (200, 300))
@@ -294,7 +296,10 @@ def show_brawlers(play, brawl, way, shop_btt,gt_dpd):
         text2 = font16.render(f'С супером: {brawlers_data[all_brawlers_list[i]]["Sdmg"]}', True, (250, 250, 250))
         screen.blit(text2, (10, 140))
         if all_brawlers_list[i] not in level.brawlers:
-            screen.blit(not_available, (50, 300))
+            screen.blit(not_available, (500, 300))
+            select_btt.hide()
+        else:
+            select_btt.show()
         screen.blit(bws_imgs[all_brawlers_list[i]], (200, 100))
         # ______________________________#
 
@@ -362,7 +367,7 @@ def open_case(btt):   # sourcery no-metrics skip: merge-duplicate-blocks
         pygame.display.update()
 
 
-def show_shop(play_btt, brawlers_btt, way, shop_btt,gt_dpd):
+def show_shop(play_btt, brawlers_btt, way, shop_btt, gt_dpd):
     gt_dpd.hide()
     play_btt.hide()
     brawlers_btt.hide()
@@ -396,16 +401,22 @@ def show_shop(play_btt, brawlers_btt, way, shop_btt,gt_dpd):
         pygame.display.update()
 
 
-def show_menu(submit=None):
+def show_menu(submit=None, sel_b=None, sel_btt=None):
     nick = level.name
     cups = level.cups
-    selected_brawler = random.choice(level.brawlers)
+    if sel_b is None:
+        sel_b = random.choice(level.brawlers)
+    else:
+        seleced_brawler = sel_b
     scal = 10
     while scal < cups:
         scal *= 10
     if submit is not None:
         submit.disable()
         submit.hide()
+    if sel_btt is not None:
+        sel_btt.disable()
+        sel_btt.hide()
     gt_dpd = Dropdown(
         screen, 475, 275, 100, 50, name='Режим игры',
         choices=[
@@ -416,7 +427,7 @@ def show_menu(submit=None):
         borderRadius=3, colour=pygame.Color('orange'), values=["fight", "fight3x3", 'tren'], direction='up', textHAlign='left'
     )
     way = ProgressBar(screen, 50, 345, 200, 40, lambda: cups/scal, curved=True)
-    play_btt = Button(screen, 475, 350, 100, 50, hoverColour=(255, 55, 100), colour=(255, 5, 55), radius=5, text='Играть!', onClick=lambda: load_game(gt_dpd.getSelected(), play_btt, brawlers_btt, way, shop_btt, gt_dpd, selected_brawler))
+    play_btt = Button(screen, 475, 350, 100, 50, hoverColour=(255, 55, 100), colour=(255, 5, 55), radius=5, text='Играть!', onClick=lambda: load_game(gt_dpd.getSelected(), play_btt, brawlers_btt, way, shop_btt, gt_dpd, sel_b))
     brawlers_btt = Button(screen, 50, 150, 80, 30, hoverColour=(255, 55, 100), colour=(255, 5, 55), radius=5,
                       text='Бойцы', onClick=lambda: show_brawlers(play_btt, brawlers_btt, way, shop_btt, gt_dpd))
     shop_btt = Button(screen, 50, 110, 80, 30, hoverColour=(55, 255, 100), colour=(5, 255, 55), radius=5,
@@ -432,9 +443,9 @@ def show_menu(submit=None):
         screen.fill(LIGHT_BLUE)
         text1 = font.render(f'{cups}/{scal}', True, (180, 180, 180))
         screen.blit(text1, (75, 300))
-        text2 = font.render(f'{selected_brawler.replace("_", " ")}', True, (250, 250, 250))
+        text2 = font.render(f'{brawlers_data[sel_b]["name"]}', True, (250, 250, 250))
         screen.blit(text2, (200, 50))
-        screen.blit(bws_imgs[selected_brawler], (200, 100))
+        screen.blit(bws_imgs[sel_b], (200, 100))
         screen.blit(gem, (400, 10))
         text3 = font.render(f'{level.gems}', True, (250, 250, 250))
         screen.blit(text3, (450, 10))
