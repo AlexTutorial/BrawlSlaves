@@ -45,9 +45,9 @@ pygame.display.set_caption("BrawlSlaves")
 screen = pygame.display.set_mode((600, 400))
 not_available = pygame.image.load("Sprites/not_available.jpg")
 box = pygame.image.load("Sprites/box.jpg")
-gem = pygame.image.load("Sprites/gem.jpg")
-case = pygame.image.load("Sprites/case.jpg")
-bws_imgs = {bw: pygame.image.load(f"Sprites/{bw}.jpg") for bw in all_brawlers_list}
+gem = pygame.image.load("Sprites/gem.png")
+case = pygame.image.load("Sprites/case.png")
+bws_imgs = {bw: pygame.image.load(f"Sprites/{bw}.png") for bw in all_brawlers_list}
 # for bw in level.brawlers:
 #     bws_imgs[bw] =
 
@@ -275,7 +275,7 @@ def show_brawlers(play, brawl, way, shop_btt,gt_dpd):
                     show_menu()
                 if event.key == pygame.K_LEFT and i >= 1:
                     i -= 1
-                if event.key == pygame.K_RIGHT and i <= 1:
+                if event.key == pygame.K_RIGHT and i <= 2:
                     i += 1
         clock.tick(120)
 

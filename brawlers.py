@@ -1,13 +1,15 @@
 all_brawlers = {
     "Van_Darkholm": "Вооружен ДШК и гранатой",
     "Artem": "МЫШ (КРОДЕТЬСЯ)",
-    "###hub.com": "git commit"
+    "###hub.com": "git commit",
+    "Vall": "V - значит в пакете"
 }
 
 all_brawlers_list = [
     "Van_Darkholm",
     "Artem",
-    "###hub.com"
+    "###hub.com",
+    "Vall"
 ]
 
 brawlers_data = {
@@ -25,5 +27,10 @@ brawlers_data = {
         "hp": 2000,
         "dmg": 600,
         "Sdmg": 1050
+    },
+    "Vall": {
+        "hp": 2300,
+        "dmg": 550,
+        "Sdmg": 900
     }
 }
