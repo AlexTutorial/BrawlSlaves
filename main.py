@@ -90,6 +90,32 @@ def policy():
         pygame.display.update()
 
 
+def gen_opponent(opp_x, opp_y, my_x, my_y, opp_bw, filled_range):
+    img = bws_imgs[opp_bw]
+    img = pygame.transform.scale(img, (50, 50))
+    screen.blit(img, (opp_x, opp_y))
+    opp_x_range = [i for i in range(opp_x, opp_x + 50)]
+    opp_y_range = [i for i in range(opp_y, opp_y + 50)]
+    if opp_y - my_x > 75:
+        opp_y -= 3
+        if list(set(opp_y_range) & set(filled_range[1])) and list(set(opp_x_range) & set(filled_range[0])):
+            opp_y += 10
+    elif my_x - opp_y > 75:
+        opp_y += 3
+        if list(set(opp_y_range) & set(filled_range[1])) and list(set(opp_x_range) & set(filled_range[0])):
+            opp_y -= 10
+    if opp_x - my_y > 75:
+        opp_x -= 3
+        if list(set(opp_y_range) & set(filled_range[1])) and list(set(opp_x_range) & set(filled_range[0])):
+            opp_x += 10
+    elif my_y - opp_x > 75:
+        opp_x += 3
+        if list(set(opp_y_range) & set(filled_range[1])) and list(set(opp_x_range) & set(filled_range[0])):
+            opp_x -= 10
+    screen.blit(img, (opp_x, opp_y))
+    return [opp_x, opp_y]
+
+
 def gen_world():
     filled_x_range = []
     filled_y_range = []
@@ -117,11 +143,12 @@ def gen_world():
 
 def run_fight(selected_bw): # sourcery no-metrics skip: low-code-quality
     counter = 0
-    my_x = 10
-    my_y = 50
-    opp_x = 10
-    opp_y = 450
+    my_x = 70
+    my_y = 10
+    opp_x = 540
+    opp_y = 70
     sp = random.choice(splashes)
+    opponent = random.choice(all_brawlers_list)
     load = ProgressBar(screen, 150, 345, 200, 40, lambda: counter / 100, curved=True, completedColour=(255, 220, 0))
     while True:
         clock.tick(120)
@@ -152,6 +179,8 @@ def run_fight(selected_bw): # sourcery no-metrics skip: low-code-quality
                 img = pygame.transform.scale(img, (50, 50))
                 screen.blit(img, (my_y, my_x))
                 filled_range = gen_world()
+                opp_pos = gen_opponent(opp_x, opp_y, my_x, my_y, opponent, filled_range)
+                opp_x, opp_y = opp_pos[0], opp_pos[1]
                 for event in events:
                     if event.type == pygame.QUIT:
                         exit()
@@ -274,10 +303,11 @@ def show_brawlers(play, brawl, way, shop_btt, gt_dpd):
                 exit()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
+                    select_btt.hide()
                     show_menu()
                 if event.key == pygame.K_LEFT and i >= 1:
                     i -= 1
-                if event.key == pygame.K_RIGHT and i <= 2:
+                if event.key == pygame.K_RIGHT and i <= 3:
                     i += 1
         clock.tick(120)
 
@@ -296,7 +326,7 @@ def show_brawlers(play, brawl, way, shop_btt, gt_dpd):
         text2 = font16.render(f'С супером: {brawlers_data[all_brawlers_list[i]]["Sdmg"]}', True, (250, 250, 250))
         screen.blit(text2, (10, 140))
         if all_brawlers_list[i] not in level.brawlers:
-            screen.blit(not_available, (500, 300))
+            screen.blit(not_available, (5, 300))
             select_btt.hide()
         else:
             select_btt.show()
