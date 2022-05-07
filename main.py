@@ -45,6 +45,7 @@ pygame.display.set_caption("BrawlSlaves")
 screen = pygame.display.set_mode((600, 400))
 not_available = pygame.image.load("Sprites/not_available.jpg")
 box = pygame.image.load("Sprites/box.jpg")
+bullet = pygame.image.load("Sprites/bullet.png")
 gem = pygame.image.load("Sprites/gem.png")
 case = pygame.image.load("Sprites/case.png")
 bws_imgs = {bw: pygame.image.load(f"Sprites/{bw}.png") for bw in all_brawlers_list}
@@ -90,30 +91,60 @@ def policy():
         pygame.display.update()
 
 
-def gen_opponent(opp_x, opp_y, my_x, my_y, opp_bw, filled_range):
+def gen_opponent(opp_x, opp_y, my_x, my_y, opp_bw, filled_range, my_hp, opp_hp):
     img = bws_imgs[opp_bw]
     img = pygame.transform.scale(img, (50, 50))
     screen.blit(img, (opp_x, opp_y))
+    # events = pygame.event.get()
     opp_x_range = [i for i in range(opp_x, opp_x + 50)]
     opp_y_range = [i for i in range(opp_y, opp_y + 50)]
-    if opp_y - my_x > 75:
-        opp_y -= 3
+    if opp_y - my_x > 50:
+        opp_y -= 1
         if list(set(opp_y_range) & set(filled_range[1])) and list(set(opp_x_range) & set(filled_range[0])):
-            opp_y += 10
-    elif my_x - opp_y > 75:
-        opp_y += 3
+            opp_y += 1
+        if opp_x > 300:
+            opp_x -= 1
+        else:
+            opp_x += 1
+
+    elif my_x - opp_y > 50:
+        opp_y += 1
         if list(set(opp_y_range) & set(filled_range[1])) and list(set(opp_x_range) & set(filled_range[0])):
             opp_y -= 10
-    if opp_x - my_y > 75:
-        opp_x -= 3
+        if opp_x > 300:
+            opp_x -= 1
+        else:
+            opp_x += 1
+
+    if opp_x - my_y > 50:
+        opp_x -= 1
         if list(set(opp_y_range) & set(filled_range[1])) and list(set(opp_x_range) & set(filled_range[0])):
-            opp_x += 10
-    elif my_y - opp_x > 75:
-        opp_x += 3
+            opp_x += 1
+        if opp_y > 200:
+            opp_y -= 1
+        else:
+            opp_y += 1
+
+    elif my_y - opp_x > 50:
+        opp_x += 1
         if list(set(opp_y_range) & set(filled_range[1])) and list(set(opp_x_range) & set(filled_range[0])):
-            opp_x -= 10
+            opp_x -= 1
+        if opp_y > 200:
+            opp_y -= 1
+        else:
+            opp_y += 1
+
+    # for event in events:
+    #     if event.type == pygame.QUIT:
+    #         exit()
+        # elif event.type == pygame.KEYDOWN:
+        #     if event.key == pygame.K_SPACE:
+        #         this_opp_x = opp_x
+        #         this_opp_y = opp_y
+        #         bullet_x = my_x
+        #         bullet_y = my_y
     screen.blit(img, (opp_x, opp_y))
-    return [opp_x, opp_y]
+    return [opp_x, opp_y, my_hp, opp_hp]
 
 
 def gen_world():
@@ -148,7 +179,9 @@ def run_fight(selected_bw): # sourcery no-metrics skip: low-code-quality
     opp_x = 540
     opp_y = 70
     sp = random.choice(splashes)
+    my_hp = brawlers_data[selected_bw]['hp']
     opponent = random.choice(all_brawlers_list)
+    opp_hp = brawlers_data[opponent]['hp']
     load = ProgressBar(screen, 150, 345, 200, 40, lambda: counter / 100, curved=True, completedColour=(255, 220, 0))
     while True:
         clock.tick(120)
@@ -179,8 +212,8 @@ def run_fight(selected_bw): # sourcery no-metrics skip: low-code-quality
                 img = pygame.transform.scale(img, (50, 50))
                 screen.blit(img, (my_y, my_x))
                 filled_range = gen_world()
-                opp_pos = gen_opponent(opp_x, opp_y, my_x, my_y, opponent, filled_range)
-                opp_x, opp_y = opp_pos[0], opp_pos[1]
+                opp_pos = gen_opponent(opp_x, opp_y, my_x, my_y, opponent, filled_range, my_hp, opp_hp)
+                opp_x, opp_y, my_hp, opp_hp = opp_pos[0], opp_pos[1], opp_pos[2], opp_pos[3]
                 for event in events:
                     if event.type == pygame.QUIT:
                         exit()
@@ -366,9 +399,9 @@ def open_case(btt):   # sourcery no-metrics skip: merge-duplicate-blocks
                 screen.fill(BLUE)
                 screen.blit(bws_imgs[new_bw], (200, 100))
                 text1 = font.render('НОВЫЙ БОЕЦ!!!!', True, (180, 180, 180))
-                screen.blit(text1, (75, 50))
-                text2 = font.render(f'{new_bw}', True, (250, 50, 50))
-                screen.blit(text2, (400, 50))
+                screen.blit(text1, (75, 20))
+                text2 = font.render(f'{brawlers_data[new_bw]["name"]}', True, (250, 50, 50))
+                screen.blit(text2, (200, 60))
                 text2 = font.render('Нажми пробел для продолжения', True, (180, 180, 180))
                 screen.blit(text2, (50, 350))
                 for event in events:
